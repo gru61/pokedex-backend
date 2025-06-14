@@ -1,4 +1,4 @@
-package model;
+package pokedex.model;
 
 
 import jakarta.persistence.Entity;
@@ -14,6 +14,7 @@ public class Pokemon {
 
 
     private long id;
+    private int pokedexId;
     private String name;
     private String type1;
     private String type2;
@@ -22,7 +23,8 @@ public class Pokemon {
 
     public Pokemon() {}
 
-    public Pokemon(String name, String type1, String type2, int level, int amount) {
+    public Pokemon(int pokedexId, String name, String type1, String type2, int level, int amount) {
+        this.pokedexId = pokedexId;
         this.name = name;
         this.type1 = type1;
         this.type2 = type2;
@@ -77,5 +79,26 @@ public class Pokemon {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public int getPokedexId() {
+        return pokedexId;
+    }
+
+    public void setPokedexId(int pokedexId) {
+        this.pokedexId = pokedexId;
+    }
+
+    @Override
+    public String toString() {
+        return "Pokemon{" +
+                "id=" + id +
+                ", pokedexId=" + pokedexId +
+                ", name='" + name + '\'' +
+                ", type1='" + type1 + '\'' +
+                ", type2='" + type2 + '\'' +
+                ", level=" + level +
+                ", amount=" + amount +
+                '}';
     }
 }
