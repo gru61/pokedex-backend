@@ -1,24 +1,37 @@
 package pokedex.model;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Pokemon {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-
     private long id;
+
+    @Min(value = 1, message = "Was kommt vor der 1 ? (tipp: DU!)")
+    @Max(value = 151, message = "Echte OG's wissen wie viele Pokemon es in der Gen 1 gibt (Ohne Missing No. Pokemon)")
     private int pokedexId;
+
+    @NotBlank(message = "Das ist nicht das Haus von Schwarz und Weiss (setz einen Namen)")
     private String name;
+
+    @NotBlank(message = "Ein Pokemon hat immer mindestens einen Typ")
     private String type1;
+
     private String type2;
+
+    @Min(value = 1,message = "Why so weak!? (min lvl = 1)")
+    @Max(value = 100, message = "Steroide sind nicht gut fürs Pokemon (max lvl = 100)")
     private int level;
+
+    @Min(value = 0, message = "Bei wem Schuldest du Pokemon?")
     private int amount;
 
     public Pokemon() {}
