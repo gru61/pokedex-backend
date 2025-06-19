@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
 
 @Entity
@@ -34,10 +35,13 @@ public class Box {
     }
 
     public List<OwnedPokemon> getPokemons() {
-        return pokemons;
+        return Collections.unmodifiableList(pokemons);
     }
 
     public void addPokemon(OwnedPokemon pokemon) {
+        if (pokemons.size() >= 20) {
+            throw new IllegalArgumentException("Box ist schon voll");
+        }
         pokemons.add(pokemon);
         pokemon.setBox(this);
     }

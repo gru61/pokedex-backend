@@ -3,7 +3,6 @@ package pokedex.dto;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import pokedex.model.Box;
 import pokedex.model.Edition;
 
 public class OwnedPokemonRequest {
@@ -33,8 +32,8 @@ public class OwnedPokemonRequest {
         return nickname;
     }
 
-    public void setNickname(String nickName) {
-        this.nickname = nickName;
+    public void setNickname(String nickname) {
+        this.nickname = this.nickname;
     }
 
     public int getLevel() {

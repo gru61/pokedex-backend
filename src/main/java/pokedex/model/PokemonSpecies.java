@@ -13,11 +13,13 @@ public class PokemonSpecies {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(unique = true)
     @Min(value = 1, message = "Was kommt vor der 1? (tipp:DU!)")
     @Max(value = 151, message = "Echte OG's wissen wie vile ePokemon es in der Gen 1 gibt")
     private int pokedexId;
 
     @NotBlank(message = "Das ist nicht das Haus von Schwarz und Weiss")
+    @Column(unique = true)
     private String name;
 
     @NotBlank(message = "Ein Pokemon hat mindestens einen Typ")

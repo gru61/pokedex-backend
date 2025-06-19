@@ -38,10 +38,11 @@ public class PokemonSpeciesController {
 
     @GetMapping("/byName/{name}")
     public PokemonSpecies getSpeciesByName(@PathVariable String name) {
-        return repository.findAll()
-                .stream()
-                .filter(species -> species.getName().equalsIgnoreCase(name.trim()))
-                .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Nicht Gefunden"));
+
+        if (name == null || name.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name nicht null");
+        }
+        return repository.findByName(name.trim())
+                .orElseThrow(() ->new ResponseStatusException(HttpStatus.NOT_FOUND, "Dein Gesuchtes Pokemon: " + name + " wurde nicht gefunden"));
     }
 }

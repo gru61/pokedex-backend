@@ -131,7 +131,7 @@ public class OwnedPokemonController {
         ownedRepo.save(pokemon);
 
         long count = ownedRepo.countByNicknameAndIdNot(newNickname, id);
-        if (newNickname != null && count > 1) {
+        if (newNickname != null && count >=1) {
             return ResponseEntity.ok("Spitzname gegeben. Aber gehen dir die Ideen aus .....");
         }
 
@@ -143,7 +143,7 @@ public class OwnedPokemonController {
         OwnedPokemon pokemon = ownedRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon nicht gefunden"));
 
-        String newBoxName = request.getBox();
+        String newBoxName = request.getBoxName();
         String currentBoxName = pokemon.getBox() != null ? pokemon.getBox().getName() : null;
 
         if (!Objects.equals(newBoxName, currentBoxName)) {

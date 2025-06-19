@@ -1,18 +1,18 @@
 package pokedex.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import pokedex.model.Box;
+
 
 public class BoxUpdateRequest {
 
     @NotBlank(message = "Boxname darf nicht leer sein")
-    private String box;
+    private String boxName;
 
-    public String getBox() {
-        return box;
+    public String getBoxName() {
+        return boxName;
     }
 
-    public void setBox(String box) {
-        this.box = box;
+    public void setBoxName(String boxName) {
+        this.boxName = boxName;
     }
 }
