@@ -1,37 +1,32 @@
 package pokedex.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import pokedex.model.Box;
-import pokedex.repository.BoxRepository;
-
-import java.util.List;
+import pokedex.service.BoxService;
 
 @RestController
-@RequestMapping("/api/boxes")
+@RequestMapping("/api/box")
 public class BoxController {
 
 
-    private final BoxRepository boxRepo;
+    private final BoxService boxService;
 
     @Autowired
-    public BoxController(BoxRepository boxRepo) {
-        this.boxRepo = boxRepo;
-    }
-
-    @GetMapping("")
-    public List<Box> getAllBoxes() {
-        return boxRepo.findAll();
+    public BoxController(BoxService boxService) {
+        this.boxService = boxService;
     }
 
     @GetMapping("/{name}")
     public Box getBoxByName(@PathVariable String name) {
-        return boxRepo.findByName(name)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Box nicht gefunden: " + name));
+        return boxService.getBoxByName(name);
+    }
+
+    @GetMapping("/{name}/isfull")
+    public boolean isFull(@PathVariable String name) {
+        return boxService.isFull(name);
     }
 }

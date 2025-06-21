@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface BoxRepository extends JpaRepository<Box, Long> {
     Optional<Box> findByName(String name);
+
+    long countByName(String name);
 }
