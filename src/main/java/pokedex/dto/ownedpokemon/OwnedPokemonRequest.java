@@ -1,9 +1,11 @@
-package pokedex.dto;
+package pokedex.dto.ownedpokemon;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import pokedex.model.Edition;
+import pokedex.model.box.Box;
+import pokedex.model.box.BoxName;
+import pokedex.model.edition.Edition;
 
 public class OwnedPokemonRequest {
 
@@ -18,7 +20,8 @@ public class OwnedPokemonRequest {
 
     private Edition edition;
 
-    private String box;
+    @NotNull(message = "Es muss eine Box ausgewählt sein")
+    private BoxName box;
 
     public Long getSpeciesId() {
         return speciesId;
@@ -52,11 +55,11 @@ public class OwnedPokemonRequest {
         this.edition = edition;
     }
 
-    public String getBox() {
+    public BoxName getBox() {
         return box;
     }
 
-    public void setBox(String box) {
+    public void setBox(BoxName box) {
         this.box = box;
     }
 }

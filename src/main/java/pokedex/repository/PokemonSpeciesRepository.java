@@ -1,7 +1,7 @@
 package pokedex.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pokedex.model.PokemonSpecies;
+import pokedex.model.pokemonspecies.PokemonSpecies;
 
 import java.util.Optional;
 

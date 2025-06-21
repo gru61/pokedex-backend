@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pokedex.model.Box;
+import pokedex.model.box.Box;
+import pokedex.model.box.BoxName;
 import pokedex.service.BoxService;
 
 @RestController
@@ -21,12 +22,12 @@ public class BoxController {
     }
 
     @GetMapping("/{name}")
-    public Box getBoxByName(@PathVariable String name) {
+    public Box getBoxByName(@PathVariable BoxName name) {
         return boxService.getBoxByName(name);
     }
 
     @GetMapping("/{name}/isfull")
-    public boolean isFull(@PathVariable String name) {
+    public boolean isFull(@PathVariable BoxName name) {
         return boxService.isFull(name);
     }
 }
