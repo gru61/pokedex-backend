@@ -2,14 +2,12 @@ package pokedex.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import pokedex.model.PokemonSpecies;
-import pokedex.repository.PokemonSpeciesRepository;
+import pokedex.service.PokemonSpeciesService;
 
 import java.util.List;
 
@@ -18,31 +16,21 @@ import java.util.List;
 public class PokemonSpeciesController {
 
 
-    private final PokemonSpeciesRepository repository;
+    private final PokemonSpeciesService speciesService;
 
     @Autowired
-    public PokemonSpeciesController(PokemonSpeciesRepository repository) {
-        this.repository = repository;
+    public PokemonSpeciesController(PokemonSpeciesService speciesService) {
+        this.speciesService = speciesService;
     }
 
     @GetMapping("")
     public List<PokemonSpecies> getAllSpecies() {
-        return repository.findAll();
+        return speciesService.getAllSpecies();
     }
 
     @GetMapping("/{id}")
     public PokemonSpecies getSpeciesById(@PathVariable Long id) {
-        return repository.findById(id)
-                .orElseThrow(() ->new ResponseStatusException(HttpStatus.NOT_FOUND, "Nicht Gefunden"));
+        return speciesService.getById(id);
     }
 
-    @GetMapping("/byName/{name}")
-    public PokemonSpecies getSpeciesByName(@PathVariable String name) {
-
-        if (name == null || name.trim().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name nicht null");
-        }
-        return repository.findByName(name.trim())
-                .orElseThrow(() ->new ResponseStatusException(HttpStatus.NOT_FOUND, "Dein Gesuchtes Pokemon: " + name + " wurde nicht gefunden"));
-    }
 }
