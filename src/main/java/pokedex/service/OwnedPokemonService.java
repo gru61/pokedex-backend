@@ -115,8 +115,7 @@ public class OwnedPokemonService {
     }
 
     public String updateNickname(long id, NicknameUpdateRequest request) {
-        OwnedPokemon pokemon = ownedRepo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon nicht gefunden"));
+        OwnedPokemon pokemon = findByIdOrThrow(id);
 
         String newNickname = request.getNickname() == null ? null : request.getNickname().trim();
         if (newNickname != null && newNickname.isEmpty()) {
@@ -140,8 +139,7 @@ public class OwnedPokemonService {
     }
 
     public String updateBox(long id, BoxUpdateRequest request) {
-        OwnedPokemon pokemon = ownedRepo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon nicht gefunden"));
+        OwnedPokemon pokemon = findByIdOrThrow(id);
 
         BoxName newBoxName = request.getBoxName();
         BoxName currentBoxName = pokemon.getBox() != null ? pokemon.getBox().getName() : null;
@@ -162,8 +160,7 @@ public class OwnedPokemonService {
     }
 
     public String updateEdition(long id, EditionUpdateRequest request) {
-        OwnedPokemon pokemon = ownedRepo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon nicht gefunden"));
+        OwnedPokemon pokemon = findByIdOrThrow(id);
 
         Edition edition = request.getEdition();
         if (edition == null) {
@@ -181,7 +178,13 @@ public class OwnedPokemonService {
     }
 
     public void deletePokemonById(long id) {
+        findByIdOrThrow(id);
         ownedRepo.deleteById(id);
+    }
+
+    private OwnedPokemon findByIdOrThrow(long id) {
+        return ownedRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon nicht gefunden"));
     }
 
 }
