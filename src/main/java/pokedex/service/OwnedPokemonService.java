@@ -1,16 +1,19 @@
 package pokedex.service;
 
 
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import pokedex.dto.*;
-import pokedex.model.Box;
-import pokedex.model.Edition;
-import pokedex.model.OwnedPokemon;
-import pokedex.model.PokemonSpecies;
+import pokedex.dto.box.BoxUpdateRequest;
+import pokedex.dto.ownedpokemon.EditionUpdateRequest;
+import pokedex.dto.ownedpokemon.LevelUpdateRequest;
+import pokedex.dto.ownedpokemon.NicknameUpdateRequest;
+import pokedex.dto.ownedpokemon.OwnedPokemonRequest;
+import pokedex.model.box.Box;
+import pokedex.model.box.BoxName;
+import pokedex.model.edition.Edition;
+import pokedex.model.ownedpokemon.OwnedPokemon;
+import pokedex.model.pokemonspecies.PokemonSpecies;
 import pokedex.repository.BoxRepository;
 import pokedex.repository.OwnedPokemonRepository;
 import pokedex.repository.PokemonSpeciesRepository;
@@ -46,10 +49,11 @@ public class OwnedPokemonService {
                 .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon nicht gefunden"));
 
 
-        Box box = boxRepo.findByName(request.getBox())
+        BoxName boxName = request.getBox();
+        Box box = boxRepo.findByName(boxName)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Box nicht gefunden"));
 
-        checkBoxCapacity(request.getBox());
+        checkBoxCapacity(boxName);
 
         OwnedPokemon pokemon = new OwnedPokemon(
                 species,
@@ -58,11 +62,11 @@ public class OwnedPokemonService {
                 request.getEdition(),
                 box
         );
-        ownedRepo.save(pokemon);
-        return pokemon;
+
+        return ownedRepo.save(pokemon);
     }
 
-    private void checkBoxCapacity(String boxName) {
+    private void checkBoxCapacity(BoxName boxName) {
         long count = ownedRepo.countByBox_Name(boxName);
         if (count >= 20) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Die Box ist schon voll");
@@ -80,8 +84,8 @@ public class OwnedPokemonService {
         PokemonSpecies species = speciesRepo.findById(request.getSpeciesId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ungültiger speciesId"));
 
-        String newBoxName = request.getBox();
-        String currentBoxName = existing.getBox() != null ? existing.getBox().getName() : null;
+        BoxName newBoxName = request.getBox();
+        BoxName currentBoxName = existing.getBox() != null ? existing.getBox().getName() : null;
 
         if (!Objects.equals(newBoxName, currentBoxName)) {
             checkBoxCapacity(newBoxName);
@@ -139,15 +143,14 @@ public class OwnedPokemonService {
         OwnedPokemon pokemon = ownedRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon nicht gefunden"));
 
-        String newBoxName = request.getBoxName();
-        String currentBoxName = pokemon.getBox() != null ? pokemon.getBox().getName() : null;
+        BoxName newBoxName = request.getBoxName();
+        BoxName currentBoxName = pokemon.getBox() != null ? pokemon.getBox().getName() : null;
 
         if (!Objects.equals(newBoxName, currentBoxName)) {
             Box newBox = boxRepo.findByName(newBoxName)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Box nicht gefunden"));
 
-            long count = ownedRepo.countByBox_Name(newBoxName);
-            if (count >= 20) {
+            if (ownedRepo.countByBox_Name(newBoxName) >= 20) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Die Box ist bereits voll");
             }
 

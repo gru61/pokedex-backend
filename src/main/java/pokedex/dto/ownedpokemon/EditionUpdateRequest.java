@@ -1,6 +1,6 @@
-package pokedex.dto;
+package pokedex.dto.ownedpokemon;
 
-import pokedex.model.Edition;
+import pokedex.model.edition.Edition;
 
 public class EditionUpdateRequest {
 

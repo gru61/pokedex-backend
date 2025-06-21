@@ -1,9 +1,10 @@
-package pokedex.model;
+package pokedex.model.pokemonspecies;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class PokemonSpecies {
@@ -20,9 +21,11 @@ public class PokemonSpecies {
 
     @NotBlank(message = "Das ist nicht das Haus von Schwarz und Weiss")
     @Column(unique = true)
+    @Size(max=11)//längster Name der ersten Gen = Knuddeluff
     private String name;
 
     @NotBlank(message = "Ein Pokemon hat mindestens einen Typ")
+    @Size(max=7)//längster Typ z.B. Elektro
     private String type1;
 
     private String type2;

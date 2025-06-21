@@ -1,12 +1,13 @@
 package pokedex.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pokedex.model.Box;
+import pokedex.model.box.Box;
+import pokedex.model.box.BoxName;
 
 import java.util.Optional;
 
 public interface BoxRepository extends JpaRepository<Box, Long> {
-    Optional<Box> findByName(String name);
+    Optional<Box> findByName(BoxName name);
 
-    long countByName(String name);
+    long countByName(BoxName name);
 }

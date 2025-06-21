@@ -3,7 +3,7 @@ package pokedex.service;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import pokedex.model.PokemonSpecies;
+import pokedex.model.pokemonspecies.PokemonSpecies;
 import pokedex.repository.PokemonSpeciesRepository;
 
 import java.util.List;

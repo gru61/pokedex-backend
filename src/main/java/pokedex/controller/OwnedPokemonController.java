@@ -4,9 +4,13 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pokedex.dto.*;
-import pokedex.model.Edition;
-import pokedex.model.OwnedPokemon;
+import pokedex.dto.box.BoxUpdateRequest;
+import pokedex.dto.ownedpokemon.EditionUpdateRequest;
+import pokedex.dto.ownedpokemon.LevelUpdateRequest;
+import pokedex.dto.ownedpokemon.NicknameUpdateRequest;
+import pokedex.dto.ownedpokemon.OwnedPokemonRequest;
+import pokedex.model.edition.Edition;
+import pokedex.model.ownedpokemon.OwnedPokemon;
 import pokedex.service.OwnedPokemonService;
 
 import java.util.List;

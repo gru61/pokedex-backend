@@ -1,6 +1,8 @@
-package pokedex.model;
+package pokedex.model.box;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import pokedex.model.ownedpokemon.OwnedPokemon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +17,18 @@ public class Box {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(unique = true, nullable = false, updatable = false)
-    private String name;
+    @NotNull
+    private BoxName name;
 
     @OneToMany(mappedBy = "box", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OwnedPokemon> pokemons = new ArrayList<>();
 
     public Box () {}
-    public Box (String name) {
+
+
+    public Box(BoxName name) {
         this.name = name;
     }
 
@@ -30,7 +36,7 @@ public class Box {
         return id;
     }
 
-    public String getName() {
+    public BoxName getName() {
         return name;
     }
 

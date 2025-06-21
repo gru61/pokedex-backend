@@ -1,4 +1,4 @@
-package pokedex.model;
+package pokedex.model.edition;
 
 public enum Edition {
 

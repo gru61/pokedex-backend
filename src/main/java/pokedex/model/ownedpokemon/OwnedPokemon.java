@@ -1,8 +1,12 @@
-package pokedex.model;
+package pokedex.model.ownedpokemon;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import pokedex.model.pokemonspecies.PokemonSpecies;
+import pokedex.model.box.Box;
+import pokedex.model.edition.Edition;
 
 @Entity
 public class OwnedPokemon {
@@ -12,6 +16,8 @@ public class OwnedPokemon {
     private Long id;
 
     @ManyToOne(optional = false)
+    @NotNull
+    @JoinColumn(nullable = false)
     private PokemonSpecies species;
 
     private String nickname;
@@ -21,6 +27,8 @@ public class OwnedPokemon {
     private int level;
 
     @ManyToOne(optional = false)
+    @NotNull
+    @JoinColumn(nullable = false)
     private Box box;
 
     @Enumerated(EnumType.STRING)
