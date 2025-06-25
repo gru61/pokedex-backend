@@ -4,10 +4,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 import pokedex.model.pokemonspecies.PokemonSpecies;
 import pokedex.model.box.Box;
 import pokedex.model.edition.Edition;
 
+@Getter
+@Setter
 @Entity
 public class OwnedPokemon {
 
@@ -36,7 +40,6 @@ public class OwnedPokemon {
 
     public OwnedPokemon() {}
 
-
     public OwnedPokemon(PokemonSpecies species, String nickname, int level, Edition edition, Box box) {
         this.species = species;
         this.nickname = nickname;
@@ -45,47 +48,4 @@ public class OwnedPokemon {
         this.box = box;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public PokemonSpecies getSpecies() {
-        return species;
-    }
-
-    public void setSpecies(PokemonSpecies species) {
-        this.species = species;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public Box getBox() {
-        return box;
-    }
-
-    public void setBox(Box box) {
-        this.box = box;
-    }
-
-    public Edition getEdition() {
-        return edition;
-    }
-
-    public void setEdition(Edition edition) {
-        this.edition = edition;
-    }
 }

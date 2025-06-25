@@ -24,7 +24,20 @@ public class PokemonSpeciesService {
 
     public PokemonSpecies getById(long id) {
         return speciesRepo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon-Art nicht gefunden"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon nicht gefunden"));
     }
 
+    public PokemonSpecies getByPokedexId(int pokedexId) {
+        return speciesRepo.findByPokedexId(pokedexId)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon nicht gefunden"));
+    }
+
+    public List<PokemonSpecies> getByName(String name) {
+        List<PokemonSpecies> result = speciesRepo.findByName(name);
+
+        if (result.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon: " +name + " nicht gefunden" );
+        }
+        return result;
+    }
 }

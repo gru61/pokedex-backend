@@ -1,5 +1,8 @@
 package pokedex.model.edition;
 
+import lombok.Getter;
+
+@Getter
 public enum Edition {
 
     GELB("Gelb"),
@@ -12,7 +15,4 @@ public enum Edition {
         this.displayName = displayName;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
 }
