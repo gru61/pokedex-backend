@@ -18,6 +18,7 @@ import pokedex.repository.BoxRepository;
 import pokedex.repository.OwnedPokemonRepository;
 import pokedex.repository.PokemonSpeciesRepository;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,12 +49,26 @@ public class OwnedPokemonService {
         PokemonSpecies species = speciesRepo.findById(request.getSpeciesId())
                 .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon nicht gefunden"));
 
+        BoxName requestedBox = request.getBox();
 
-        BoxName boxName = request.getBox();
-        Box box = boxRepo.findByName(boxName)
+        if (requestedBox == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Box darf nicht leer sein");
+        }
+
+        BoxName finalBox = requestedBox;
+
+        if (!requestedBox.equals(BoxName.TEAM)) {
+            if (ownedRepo.countByBox_Name(requestedBox) >= 20) {
+                finalBox = findNextAvailableBox();
+            }
+        } else {
+            if (ownedRepo.countByBox_Name(requestedBox) >= 6) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Du kannst nicht mehr als 6 Pokemon tragen");
+            }
+        }
+
+        Box box = boxRepo.findByName(finalBox)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Box nicht gefunden"));
-
-        checkBoxCapacity(boxName);
 
         OwnedPokemon pokemon = new OwnedPokemon(
                 species,
@@ -62,20 +77,30 @@ public class OwnedPokemonService {
                 request.getEdition(),
                 box
         );
-
         return ownedRepo.save(pokemon);
     }
 
-    private void checkBoxCapacity(BoxName boxName) {
+    private void checkCapacity(BoxName boxName) {
         long count = ownedRepo.countByBox_Name(boxName);
-        if (count >= 20) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Die Box ist schon voll");
+
+        if (boxName.equals(BoxName.TEAM) && count >= 6) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Du kannst nicht mehr als 6 Pokemon bei dir tragen");
+        } else if (count >= 20) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,"Die Box ist voll, dein Pokemon wird in die nächst freien BOX weiter geleitet");
         }
     }
 
+    private BoxName findNextAvailableBox() {
+        return Arrays.stream(BoxName.values())
+                .filter(box -> !box.equals(BoxName.TEAM))
+                .filter(box ->ownedRepo.countByBox_Name(box) <20)
+                .findFirst()
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.CONFLICT, "Du kannst keine weitere Pokemon hinzufügen"));
+    }
+
+
     public OwnedPokemon updatePokemon(long id, OwnedPokemonRequest request) {
-        OwnedPokemon existing = ownedRepo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon nicht gefunden"));
+        OwnedPokemon existing = getPokemonById(id);
 
         if (request.getLevel() < existing.getLevel()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Level kann nicht gesenkt werden");
@@ -88,7 +113,7 @@ public class OwnedPokemonService {
         BoxName currentBoxName = existing.getBox() != null ? existing.getBox().getName() : null;
 
         if (!Objects.equals(newBoxName, currentBoxName)) {
-            checkBoxCapacity(newBoxName);
+            checkCapacity(newBoxName);
             Box newBox = boxRepo.findByName(newBoxName)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Box nicht gefunden"));
             existing.setBox(newBox);
@@ -103,8 +128,7 @@ public class OwnedPokemonService {
     }
 
     public OwnedPokemon updateLevel(long id, LevelUpdateRequest request) {
-        OwnedPokemon existing = ownedRepo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon nicht gefunden"));
+        OwnedPokemon existing = getPokemonById(id);
 
         if (request.getLevel() < existing.getLevel()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Dein Pokemon kann nicht schwächer werden");
@@ -115,7 +139,7 @@ public class OwnedPokemonService {
     }
 
     public String updateNickname(long id, NicknameUpdateRequest request) {
-        OwnedPokemon pokemon = findByIdOrThrow(id);
+        OwnedPokemon pokemon = getPokemonById(id);
 
         String newNickname = request.getNickname() == null ? null : request.getNickname().trim();
         if (newNickname != null && newNickname.isEmpty()) {
@@ -139,7 +163,7 @@ public class OwnedPokemonService {
     }
 
     public String updateBox(long id, BoxUpdateRequest request) {
-        OwnedPokemon pokemon = findByIdOrThrow(id);
+        OwnedPokemon pokemon = getPokemonById(id);
 
         BoxName newBoxName = request.getBoxName();
         BoxName currentBoxName = pokemon.getBox() != null ? pokemon.getBox().getName() : null;
@@ -148,10 +172,7 @@ public class OwnedPokemonService {
             Box newBox = boxRepo.findByName(newBoxName)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Box nicht gefunden"));
 
-            if (ownedRepo.countByBox_Name(newBoxName) >= 20) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Die Box ist bereits voll");
-            }
-
+            checkCapacity(newBoxName);
             pokemon.setBox(newBox);
             ownedRepo.save(pokemon);
         }
@@ -160,7 +181,7 @@ public class OwnedPokemonService {
     }
 
     public String updateEdition(long id, EditionUpdateRequest request) {
-        OwnedPokemon pokemon = findByIdOrThrow(id);
+        OwnedPokemon pokemon = getPokemonById(id);
 
         Edition edition = request.getEdition();
         if (edition == null) {
@@ -178,13 +199,7 @@ public class OwnedPokemonService {
     }
 
     public void deletePokemonById(long id) {
-        findByIdOrThrow(id);
+        getPokemonById(id);
         ownedRepo.deleteById(id);
     }
-
-    private OwnedPokemon findByIdOrThrow(long id) {
-        return ownedRepo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon nicht gefunden"));
-    }
-
 }

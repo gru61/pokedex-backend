@@ -2,6 +2,7 @@ package pokedex.model.box;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 import pokedex.model.ownedpokemon.OwnedPokemon;
 
 import java.util.ArrayList;
@@ -10,13 +11,14 @@ import java.util.Collections;
 
 
 @Entity
-
 public class Box {
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
+    @Getter
     @Enumerated(EnumType.STRING)
     @Column(unique = true, nullable = false, updatable = false)
     @NotNull
@@ -30,14 +32,6 @@ public class Box {
 
     public Box(BoxName name) {
         this.name = name;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public BoxName getName() {
-        return name;
     }
 
     public List<OwnedPokemon> getPokemons() {

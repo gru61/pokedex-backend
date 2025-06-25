@@ -33,4 +33,14 @@ public class PokemonSpeciesController {
         return speciesService.getById(id);
     }
 
+    @GetMapping("/pokedex-id/{pokedexId}")
+    public PokemonSpecies getByPokedexId(@PathVariable int pokedexId) {
+        return speciesService.getByPokedexId(pokedexId);
+    }
+
+    @GetMapping("/name/{name}")
+    public List<PokemonSpecies> getByName(@PathVariable String name) {
+        return speciesService.getByName(name);
+    }
+
 }

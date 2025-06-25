@@ -1,14 +1,14 @@
 package pokedex.dto.ownedpokemon;
 
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class NicknameUpdateRequest {
 
+    @Size(min = 1, max = 10)
     private String nickname;
 
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
 }
