@@ -34,6 +34,7 @@ public class BoxController {
 
     @Operation(summary = "Überprüft ob die Ziel Box voll ist", description = "return true wenn voll")
     @ApiResponse(responseCode = "200", description = "Ergebnis wurde erfolgreich geladen")
+    @ApiResponse(responseCode = "404", description = "Box wurde nicht gefunden")
     @GetMapping("/{name}/isfull")
     public boolean isFull(@PathVariable BoxName name) {
         return boxService.isFull(name);
@@ -42,7 +43,8 @@ public class BoxController {
 
     @Operation(summary = "Verschiebt ein Pokemon von Box... zu Box...", description = "Zentraler Endpunkt für drag & drop")
     @ApiResponse(responseCode = "200", description = "Erfolgreich verschoben")
-    @ApiResponse(responseCode = "409", description = "Ziel Box entweder voll oder nicht vorhanden")
+    @ApiResponse(responseCode = "404", description = "Box oder Pokemon nicht gefunden")
+    @ApiResponse(responseCode = "409", description = "Ziel Box ist voll | Quellbox gleich Ziel Box")
     @PutMapping("/{sourceBox}/move-to/{targetBox}/{pokemonId}")
     public ResponseEntity<String> movePokemon (@PathVariable BoxName sourceBox, @PathVariable BoxName targetBox, @PathVariable Long pokemonId) {
         boxService.movePokemon(sourceBox,targetBox,pokemonId);
