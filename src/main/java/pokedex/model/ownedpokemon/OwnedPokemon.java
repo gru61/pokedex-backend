@@ -1,5 +1,6 @@
 package pokedex.model.ownedpokemon;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -33,6 +34,7 @@ public class OwnedPokemon {
     @ManyToOne(optional = false)
     @NotNull
     @JoinColumn(nullable = false)
+    @JsonBackReference
     private Box box;
 
     @Enumerated(EnumType.STRING)
@@ -46,6 +48,38 @@ public class OwnedPokemon {
         this.level = level;
         this.edition = edition;
         this.box = box;
+    }
+
+    /*
+    * */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof OwnedPokemon)) return false;
+
+        OwnedPokemon that = (OwnedPokemon) o;
+
+        return id != null && id.equals(that.id);
+    }
+
+    /*
+    * Gibt die ID als hash zurück und überprüft diesen
+    * */
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "OwnedPokemon{" +
+                "id=" + id +
+                ", species=" + species.getName() +
+                ", nickname='" + nickname + '\'' +
+                ", level=" + level +
+                ", edition=" + edition +
+                ", box=" + (box != null ? box.getName() : "null") +
+                '}';
     }
 
 }

@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface BoxRepository extends JpaRepository<Box, Long> {
     Optional<Box> findByName(BoxName name);
 
-    long countByName(BoxName name);
+    Long countByName(BoxName name);
 }
