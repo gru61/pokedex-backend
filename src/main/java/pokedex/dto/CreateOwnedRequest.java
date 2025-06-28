@@ -1,35 +1,34 @@
-package pokedex.dto.ownedpokemon;
+package pokedex.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import pokedex.model.box.Box;
+import lombok.ToString;
 import pokedex.model.box.BoxName;
 import pokedex.model.edition.Edition;
 
-@Getter
+
 @Setter
-public class OwnedPokemonRequest {
+@Getter
+@ToString
+public class CreateOwnedRequest {
 
-    @NotNull(message = "speciesId darf nicht NULL sein")
+    @NotNull(message = "Die Pokedex ID darf nicht NULL sein")
     private Long speciesId;
-
-    private String nickname;
 
     @Min(value = 1, message = "Why so weak!? (min lvl = 1)")
     @Max(value = 100, message = "Steroide sind nicht gut fürs Pokemon (max lvl = 100)")
-    private int level;
+    private Integer level;
 
-    @NotNull
+    @NotNull(message = "Wähle eine Edition")
     private Edition edition;
 
-    @NotNull(message = "Es muss eine Box ausgewählt sein")
+    @NotNull(message = "Eine Box muss ausgewählt werden")
     private BoxName box;
 
-    public void setNickname(String nickname) {
-        this.nickname = this.nickname;
-    }
-
+    @Size(max = 10, message = "Nickname soll ja nicht länger als der Wahre Name sein")
+    private String nickname;
 }

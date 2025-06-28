@@ -2,6 +2,10 @@ package pokedex.model.edition;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 public enum Edition {
 
@@ -15,4 +19,9 @@ public enum Edition {
         this.displayName = displayName;
     }
 
+    public static List<String> getAllDisplayNames() {
+        return Arrays.stream(values())
+                .map(Edition::getDisplayName)
+                .collect(Collectors.toList());
+    }
 }

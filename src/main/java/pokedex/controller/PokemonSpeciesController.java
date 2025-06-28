@@ -27,18 +27,11 @@ public class PokemonSpeciesController {
 
     @Operation(summary = "Gibt eine Liste aller 151 Pokemon zurück", description = "Wird für die UI des Pokedex gebraucht")
     @ApiResponse(responseCode = "200", description = "Liste erfolgreich geladen")
-    @GetMapping("")
+    @GetMapping
     public List<PokemonSpecies> getAllSpecies() {
         return speciesService.getAllSpecies();
     }
 
-    @Operation(summary = "Sucht das Ziel Pokemon anhand des ID", description = "Nur für interne zwecke")
-    @ApiResponse(responseCode = "200", description = "Pokemon wurde gefunden")
-    @ApiResponse( responseCode = "404", description = "Pokemon nicht gefunden")
-    @GetMapping("/{id}")
-    public PokemonSpecies getSpeciesById(@PathVariable Long id) {
-        return speciesService.getById(id);
-    }
 
     @Operation(summary = "Sucht das Ziel Pokemon anhand des Pokedex ID")
     @ApiResponse(responseCode = "200", description = "Pokemon wurde gefunden")

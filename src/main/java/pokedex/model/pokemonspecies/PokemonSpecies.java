@@ -7,11 +7,14 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import pokedex.model.type.PokemonType;
 
 @Setter
 @Getter
 @Entity
 public class PokemonSpecies {
+
+    private static final int MAX_NAME_LENGTH = 11;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,19 +27,21 @@ public class PokemonSpecies {
 
     @NotBlank(message = "Das ist nicht das Haus von Schwarz und Weiss")
     @Column(unique = true)
-    @Size(max=11)//längster Name der ersten Gen = Knuddeluff
+    @Size(max=MAX_NAME_LENGTH)//längster Name der ersten Gen = Knuddeluff
     private String name;
 
-    @NotBlank(message = "Ein Pokemon hat mindestens einen Typ")
-    @Size(max=7)//längster Typ z.B. Elektro
-    private String type1;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "Type1", nullable = false)
+    private PokemonType type1;
 
-    private String type2;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "Type2")
+    private PokemonType type2;
 
     public PokemonSpecies() {}
 
 
-    public PokemonSpecies(int pokedexId, String name, String type1, String type2) {
+    public PokemonSpecies(int pokedexId, String name, PokemonType type1, PokemonType type2) {
         this.pokedexId = pokedexId;
         this.name = name;
         this.type1 = type1;

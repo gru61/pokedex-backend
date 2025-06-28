@@ -1,0 +1,53 @@
+package pokedex.dto;
+
+
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import pokedex.model.box.BoxName;
+import pokedex.model.edition.Edition;
+
+@Setter
+@Getter
+@ToString
+public class UpdateOwnedRequest {
+
+
+    /**
+    * Die neue Species ID des Pokemon (für die Entwicklung)
+    * Muss ein gültiger Pokedex-Eintrag sein und eine erlaubte Entwicklung darstellung
+    */
+    @NotNull(message = "Muss eine Pokedex ID haben")
+    private Long speciesId;
+
+
+    /**
+    * Setzt den Spitznamen für das Pokemon.
+    * Darf nicht leer sein, wenn man einen setzen will
+    */
+    @NotNull(message = "Nickname soll ja nicht länger als der Wahre Name sein")
+    @Size(min = 1, max = 10, message = "Nickname muss zwischen 1 und 10 Zeichen haben")
+    private String nickname;
+
+    /**
+    * Hier wird das Level des Pokemon gesetzt.
+    * Kann nicht kleiner sein als schon eingesetzt
+    */
+    @Min(value = 1, message = "Why so weak!? (min lvl = 1)")
+    @Max(value = 100, message = "Steroide sind nicht gut fürs Pokemon (max lvl = 100)")
+    private Integer level;
+
+    /**
+     * Die Edition, in der sich das Pokemon sich befindet
+     */
+    private Edition edition;
+
+    /**
+     * Die Box, in der sich das Pokemon befindet
+     */
+    private BoxName box;
+}
