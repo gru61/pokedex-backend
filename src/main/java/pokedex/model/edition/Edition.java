@@ -18,7 +18,7 @@ public enum Edition {
         this.displayName = displayName;
     }
 
-    public static List<String> getAllDisplayNames() {
+    public static List<String> getAllEditionNames() {
         return Arrays.stream(values())
                 .map(Edition::getDisplayName)
                 .toList();

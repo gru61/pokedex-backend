@@ -1,9 +1,10 @@
 package pokedex.service;
 
+import pokedex.exception.BoxFullException;
+import pokedex.exception.SameBoxException;
+import pokedex.exception.NotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import pokedex.model.box.Box;
 import pokedex.model.box.BoxName;
 import pokedex.model.ownedpokemon.OwnedPokemon;
@@ -34,12 +35,12 @@ public class BoxService {
      * Gibt eine Box anhand dessen Namens zurück.
      * @param name der Name der Box (TEAM /B OX1 ...)
      * @return Die gefundene Box
-     * @throws ResponseStatusException Wenn di eBox nicht gefunden wird
+     * @throws NotFoundException Wenn die Box nicht gefunden wird
      */
     public Box getBoxByName(BoxName name) {
         logger.info("Box mit dem Namen {} abgerufen", name);
         return boxRepo.findByName(name)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Box nicht gefunden"));
+                .orElseThrow(() -> new NotFoundException("Box nicht gefunden"));
     }
 
     /**
@@ -63,7 +64,10 @@ public class BoxService {
      * @param sourceBox Die aktuelle Box des Pokemon
      * @param targetBox Die Ziel-Box, in die das Pokemon soll
      * @param pokemonId Die ID des zu verschiebenden Pokemon
-     * @throws ResponseStatusException Bei ungültiger Eingabe oder Fehlern
+     * @throws SameBoxException Wenn Quell und Ziel Box identisch ist
+     * @throws NotFoundException Wenn das gefangene Pokemon nicht gefunden wurde
+     * @throws IllegalStateException Wenn dsa Pokemon nicht in der Quell-Box vorhanden ist
+     * @throws BoxFullException Wenn die Ziel-Box voll ist
      */
     @Transactional
     public void movePokemon(BoxName sourceBox, BoxName targetBox, Long pokemonId) {
@@ -71,23 +75,23 @@ public class BoxService {
 
         //Validierung: Quell und Ziel Box dürfen nicht gleich sein
         if (sourceBox.equals(targetBox)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Boxen sind identisch");
+            throw new SameBoxException("Du versuchst ein Pokemon in dieselbe Box zu verschieben");
         }
 
         //Pokemon laden
         OwnedPokemon pokemon = ownedRepo.findById(pokemonId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon nicht gefunden"));
+                .orElseThrow(() -> new NotFoundException("Pokemon mit der ID " + pokemonId + " nicht gefunden"));
 
         //Validierung: Pokemon muss sich in der Quell-Box befinden
         if (!pokemon.getBox().getName().equals(sourceBox)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Pokemon befindet sich nicht in dieser Box");
+            throw new IllegalStateException("Pokemon befindet sich nicht in der angegebenen Quell-Box");
         }
         //Ziel-Box laden
         Box target = getBoxByName(targetBox);
 
         //Validierung: Prüft ob der Ziel-Box voll ist
         if (isFull(targetBox)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Ziel Box ist schon voll");
+            throw new BoxFullException("Die Ziel Box " + targetBox + " ist schon voll");
         }
 
         //Speichert die verschiebung

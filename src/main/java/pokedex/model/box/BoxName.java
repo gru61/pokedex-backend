@@ -41,7 +41,7 @@ public enum BoxName {
      * Gibt alle Boxen als String zurück
      * @return Eine Liste aller Boxen
      */
-    public static List<String> getAllDisplayNames() {
+    public static List<String> getAllBoxNames() {
         return Stream.of(values())
                 .map(BoxName::getDisplayName)
                 .toList();

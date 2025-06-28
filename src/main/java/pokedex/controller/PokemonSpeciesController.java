@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pokedex.model.pokemonspecies.PokemonSpecies;
 import pokedex.service.PokemonSpeciesService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -22,7 +20,6 @@ import java.util.List;
 @RequestMapping("/api/species")
 public class PokemonSpeciesController {
 
-    private static final Logger logger = LoggerFactory.getLogger(PokemonSpeciesController.class);
     private final PokemonSpeciesService speciesService;
 
 
@@ -39,7 +36,6 @@ public class PokemonSpeciesController {
     @ApiResponse(responseCode = "200", description = "Liste erfolgreich geladen")
     @GetMapping
     public List<PokemonSpecies> getAllSpecies() {
-        logger.info("Rufe alle Pokemon-Arten auf");
         return speciesService.getAllSpecies();
     }
 
@@ -54,7 +50,6 @@ public class PokemonSpeciesController {
     @ApiResponse( responseCode = "404", description = "Pokemon nicht gefunden")
     @GetMapping("/pokedex-id/{pokedexId}")
     public PokemonSpecies getByPokedexId(@PathVariable int pokedexId) {
-        logger.info("Ruft die Pokemon-Art anhand des Pokedex-ID {} auf", pokedexId);
         return speciesService.getByPokedexId(pokedexId);
     }
 
@@ -69,7 +64,7 @@ public class PokemonSpeciesController {
     @ApiResponse( responseCode = "404", description = "Pokemon nicht gefunden")
     @GetMapping("/name/{name}")
     public List<PokemonSpecies> getByName(@PathVariable String name) {
-        logger.info("Ruft die Pokemon-Art per Namen {} auf", name);
         return speciesService.getByName(name);
+
     }
 }

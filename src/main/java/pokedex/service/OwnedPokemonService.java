@@ -1,9 +1,11 @@
 package pokedex.service;
 
 
-import org.springframework.http.HttpStatus;
+import pokedex.exception.BoxFullException;
+import pokedex.exception.InvalidEvolutionException;
+import pokedex.exception.InvalidUpdateException;
+import pokedex.exception.NotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import pokedex.dto.CreateOwnedRequest;
 import pokedex.dto.UpdateOwnedRequest;
 import pokedex.model.box.Box;
@@ -48,7 +50,6 @@ public class OwnedPokemonService {
      * @return Liste aller gefangenen Pokemon
      */
     public List<OwnedPokemon> getAllPokemon() {
-        logger.info("Alle gefangenen Pokemon wurden abgerufen");
         return ownedRepo.findAll();
     }
 
@@ -57,34 +58,34 @@ public class OwnedPokemonService {
      * Gibt ein gefangenes Pokemon anhand dessen ID zurück.
      * @param id Die Id des gesuchten Pokemon
      * @return Das gefundene Pokemon
-     * @throws ResponseStatusException Wenn das Pokemon nicht gefunden wird
+     * @throws NotFoundException Wenn das Pokemon nicht gefunden wird
      */
     public OwnedPokemon getPokemonById(long id) {
         logger.info("Suche das gefangene Pokemon per dessen ID. {}", id);
         return ownedRepo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon nicht gefunden"));
+                .orElseThrow(() -> new NotFoundException("Pokemon nicht gefunden"));
     }
 
     /**
      * Fügt ein neues Pokemon hinzu
      * @param request Die Eingabedaten
      * @return Das gespeicherte Pokemon
-     * @throws ResponseStatusException Wenn:
-     * - Die Box nicht ausgewählt wurde
-     * - Die Box schon voll ist
+     * @throws NotFoundException Wenn kein Pokemon mit der Pokedex-ID gefunden wurde
+     * @throws IllegalStateException Wenn die Ziel-Box nicht angegeben wurde
+     * @throws BoxFullException Wenn die Ziel-Box schon voll ist
      */
-
     public OwnedPokemon addPokemon(CreateOwnedRequest request) {
         logger.info("Füge ein neues gefangenes Pokemon hinzu: {}", request);
 
         // Lade die Species Daten des gefangenen Pokemon
-        PokemonSpecies species = getValidSpecies(request.getSpeciesId());
+        PokemonSpecies species = speciesRepo.findById(request.getSpeciesId())
+                .orElseThrow(() ->new NotFoundException("Kein Pokemon mit der Pokedex-ID " + request.getSpeciesId() + " gefunden"));
 
         // Validierung der Zielbox
         BoxName targetBoxName = request.getBox();
         if (targetBoxName == null) {
             logger.warn("Box wurde nicht angegeben");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Box muss angegeben werden");
+            throw new IllegalStateException("Box muss angegeben werden");
         }
 
         //Prüfung, ob Zielbox voll ist.
@@ -93,7 +94,7 @@ public class OwnedPokemonService {
                     ? "Team ist schon voll (max. 6 Pokemon)"
                     : "Zielbox ist schon voll (max. 20 Pokemon)";
             logger.warn(message);
-            throw new ResponseStatusException(HttpStatus.CONFLICT, message);
+            throw new BoxFullException(message);
         }
 
         // Erstellt einen neuen Pokemon Eintrag
@@ -147,7 +148,7 @@ public class OwnedPokemonService {
      * - Ob die Zeil_Box dieselbe wie die aktuelle Box
      * @param existing Das aktuelle Pokemon
      * @param request Die neuen Eingabewerte
-     * @throws ResponseStatusException:
+     * @throws InvalidUpdateException:
      * - Wenn versucht wird das Level zu senken
      * - Wenn das Pokemon sich in einer Box befindet und ob es in der Ziel-Box nicht schon vorhanden ist
      */
@@ -155,13 +156,13 @@ public class OwnedPokemonService {
         // Validierung, ob das Level nicht gesenkt wird
         if (request.getLevel() < existing.getLevel()) {
             logger.warn("Versuch, das Level eines gefangenen Pokemon zu senken: {}", existing);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Level kann nicht gesenkt werden");
+            throw new InvalidUpdateException("Level kann nicht gesenkt werden");
         }
 
         // Validierung, ob sich das Pokemon in einer Box sich befindet und es sich nicht in der gleichen Box existiert
-        if (request.getBox() != null && existing.getBox().getName().equals(request.getBox())) {
+        if (request.getBox() != null && request.getBox().equals(existing.getBox().getName())) {
             logger.warn("Pokemon befindet sich bereits in dieser Box: {}",  existing);
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Pokémon befindet sich bereits in dieser Box");
+            throw new InvalidUpdateException("Pokémon befindet sich bereits in dieser Box");
         }
     }
 
@@ -170,7 +171,7 @@ public class OwnedPokemonService {
      * Lädt ein gültiges Pokemon per Pokedex-ID
      * @param speciesId Die Pokedex-ID des Pokemons
      * @return Das passende Pokemon, gemäss Pokedex-ID
-     * @throws ResponseStatusException Wenn das Pokemon per Pokedex-ID nicht gefunden wurde
+     * @throws NotFoundException Wenn das Pokemon per Pokedex-ID nicht gefunden wurde
      */
     private PokemonSpecies getValidSpecies(Long speciesId) {
         logger.info("Lade das Pokemon per Pokedex-ID {}", speciesId);
@@ -178,7 +179,7 @@ public class OwnedPokemonService {
         Optional<PokemonSpecies> species = speciesRepo.findById(speciesId);
         if (species.isEmpty()) {
             logger.warn("Pokemon per Pokedex-IDS nicht gefunden: ID={}", speciesId);
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon nicht gefunden");
+            throw new NotFoundException("Pokemon nicht gefunden");
         }
         return species.get();
     }
@@ -188,7 +189,7 @@ public class OwnedPokemonService {
      * Prüft, ob sich das Pokémon entwickeln kann und führt diesen wenn möglich durch.
      * @param existing Das aktuelle Pokémon
      * @param newSpeciesId Die neue Pokedex-ID
-     * @throws ResponseStatusException Wenn die Entwicklung nihct erlaubt oder möglich ist
+     * @throws InvalidEvolutionException Wenn die Entwicklung nihct erlaubt oder möglich ist
      */
     private void updateSpeciesIfChanged(OwnedPokemon existing, Long newSpeciesId) {
         // Validierung, ob eine Änderung stattgefunden hat
@@ -204,7 +205,7 @@ public class OwnedPokemonService {
 
         if (!evolutionService.isAllowedEvolution(existing.getSpecies().getPokedexId(), newSpecies.getPokedexId())) {
             logger.warn("Ungültige Entwicklung dür Pokemon: {}", existing);
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Diese Entwicklung ist nicht erlaubt");
+            throw new InvalidEvolutionException("Diese Entwicklung ist nicht erlaubt");
         }
 
         existing.setSpecies(newSpecies);
@@ -216,6 +217,7 @@ public class OwnedPokemonService {
      * Verschiebt ein Pokémon in eine andere Box, falls nötig.
      * @param existing     Das aktuelle Pokémon
      * @param requestedBox Die neue Box, falls angegeben
+     * @throws BoxFullException Wenn die Ziel-Box voll ist
      */
     private void updateBoxIfChanged(OwnedPokemon existing, BoxName requestedBox) {
         if (requestedBox == null || existing.getBox().getName().equals(requestedBox)) {
@@ -227,7 +229,7 @@ public class OwnedPokemonService {
 
         if (boxService.isFull(requestedBox)) {
             logger.warn("Ziel-Box ist voll: {}", requestedBox);
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Zielbox ist voll");
+            throw new BoxFullException("Zielbox ist voll");
         }
 
         Box newBox = boxService.getBoxByName(requestedBox);
@@ -238,7 +240,6 @@ public class OwnedPokemonService {
     /**
      * Löscht ein Pokemon anhand dessen ID
      * @param id Die ID das zu löschenden Pokemon
-     * @throws ResponseStatusException Wenn das Pokemon nicht gefunden wurde
      */
     public void deletePokemonById(Long id) {
         logger.info("Lösche Pokemon anhand der ID {}", id);
