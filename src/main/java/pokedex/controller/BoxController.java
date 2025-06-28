@@ -3,12 +3,15 @@ package pokedex.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pokedex.dto.BoxDTO;
 import pokedex.model.box.Box;
 import pokedex.model.box.BoxName;
 import pokedex.service.BoxService;
+
 
 /**
  * Controller zur Verwaltung von Boxen über die REST-API.
@@ -18,7 +21,7 @@ import pokedex.service.BoxService;
 @RequestMapping("/api/boxes")
 public class BoxController {
 
-
+    private static final Logger logger = LoggerFactory.getLogger(BoxController.class);
     private final BoxService boxService;
 
 
@@ -37,6 +40,7 @@ public class BoxController {
     @ApiResponse(responseCode = "404", description = "Box wurde nicht gefunden")
     @GetMapping("/{name}")
     public ResponseEntity<BoxDTO> getBoxByName(@PathVariable BoxName name) {
+        logger.info("Ruft die Box: {} auf", name);
         Box box = boxService.getBoxByName(name);
         return ResponseEntity.ok(BoxDTO.from(box));
     }
@@ -52,6 +56,7 @@ public class BoxController {
     @ApiResponse(responseCode = "404", description = "Box wurde nicht gefunden")
     @GetMapping("/{name}/is-full")
     public ResponseEntity<Boolean> isFull(@PathVariable BoxName name) {
+        logger.debug("Prüft ob die Ziel Box voll ist: {}", name);
         return ResponseEntity.ok(boxService.isFull(name));
     }
 
@@ -69,8 +74,9 @@ public class BoxController {
     @ApiResponse(responseCode = "404", description = "Box oder Pokemon nicht gefunden", content = @Content)
     @ApiResponse(responseCode = "409", description = "Ziel Box ist voll | Quellbox gleich Ziel Box", content = @Content)
     @PutMapping("/{sourceBox}/move-to/{targetBox}/{pokemonId}")
-    public ResponseEntity<String> movePokemon (@PathVariable BoxName sourceBox, @PathVariable BoxName targetBox, @PathVariable Long pokemonId) {
+    public ResponseEntity<Void> movePokemon (@PathVariable BoxName sourceBox, @PathVariable BoxName targetBox, @PathVariable Long pokemonId) {
+        logger.info("Verschiebe Pokemon {} von {} nach {}",  pokemonId, sourceBox, targetBox);
         boxService.movePokemon(sourceBox,targetBox,pokemonId);
-        return ResponseEntity.ok("Pokemon wurde verschoben");
+        return ResponseEntity.ok().build();
     }
 }

@@ -9,8 +9,9 @@ import pokedex.model.box.BoxName;
 import pokedex.model.ownedpokemon.OwnedPokemon;
 import pokedex.repository.BoxRepository;
 import pokedex.repository.OwnedPokemonRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.List;
 
 /**
  * Service zur Verwaltung von Boxen und zum Verschieben von Pokemon zwischen den Boxen
@@ -21,18 +22,13 @@ public class BoxService {
     private final BoxRepository boxRepo;
     private final OwnedPokemonRepository ownedRepo;
 
+    private static final Logger logger = LoggerFactory.getLogger(BoxService.class);
+
     public BoxService(BoxRepository boxRepo, OwnedPokemonRepository ownedRepo) {
         this.boxRepo = boxRepo;
         this.ownedRepo = ownedRepo;
     }
 
-    /**
-     * Gibt alle Boxen zurück
-     * @return Liste aller Boxen
-     */
-    public List<Box> getAllBoxes() {
-        return boxRepo.findAll();
-    }
 
     /**
      * Gibt eine Box anhand dessen Namens zurück.
@@ -41,6 +37,7 @@ public class BoxService {
      * @throws ResponseStatusException Wenn di eBox nicht gefunden wird
      */
     public Box getBoxByName(BoxName name) {
+        logger.info("Box mit dem Namen {} abgerufen", name);
         return boxRepo.findByName(name)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Box nicht gefunden"));
     }
@@ -51,29 +48,15 @@ public class BoxService {
      * @return true, wenn die Box voll ist
      */
     public boolean isFull(BoxName name) {
-        Long count = boxRepo.countByName(name);
+        Box box = getBoxByName(name);
+        Long pokemonCount = ownedRepo.countByBox(box);
 
         if (name == BoxName.TEAM) {
-            return count >= 6;
+            return pokemonCount >= 6;
         } else {
-            return count >= 20;
+            return pokemonCount >= 20;
         }
     }
-
-    /**
-     * Prüft, ob eine Box voll istund wirft einen Fehler, falls dies der Fall wäre
-     * @param name Der Name der Box
-     * @throws ResponseStatusException  Wenn die Box voll ist
-     */
-    public void checkCapacity(BoxName name) {
-        if (isFull(name)) {
-            String message = (name == BoxName.TEAM)
-                    ? "Team ist schon voll (max. 6 Pokemon)"
-                    : "Box ist schon voll (max. 20 Pokemon)";
-            throw new ResponseStatusException(HttpStatus.CONFLICT, message);
-        }
-    }
-
 
     /**
      * Verschiebt ein Pokemon von einer Quell-Box in die Ziel-Box
@@ -84,20 +67,25 @@ public class BoxService {
      */
     @Transactional
     public void movePokemon(BoxName sourceBox, BoxName targetBox, Long pokemonId) {
+        logger.info("Versuch Pokemon {} von {} nach {} zu verschieben", pokemonId, sourceBox, targetBox);
+
+        //Validierung: Quell und Ziel Box dürfen nicht gleich sein
         if (sourceBox.equals(targetBox)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Boxen sind identisch");
         }
 
+        //Pokemon laden
         OwnedPokemon pokemon = ownedRepo.findById(pokemonId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pokemon nicht gefunden"));
 
-
-        Box target = getBoxByName(targetBox);
-
+        //Validierung: Pokemon muss sich in der Quell-Box befinden
         if (!pokemon.getBox().getName().equals(sourceBox)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Pokemon befindet sich nicht in dieser Box");
         }
+        //Ziel-Box laden
+        Box target = getBoxByName(targetBox);
 
+        //Validierung: Prüft ob der Ziel-Box voll ist
         if (isFull(targetBox)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Ziel Box ist schon voll");
         }
@@ -105,5 +93,6 @@ public class BoxService {
         //Speichert die verschiebung
         pokemon.setBox(target);
         ownedRepo.save(pokemon);
+        logger.info("Pokemon {} erfolgreich von {} nach {} verschoben", pokemonId, sourceBox, targetBox);
     }
 }

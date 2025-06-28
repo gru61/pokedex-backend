@@ -7,6 +7,10 @@ import org.springframework.stereotype.Component;
 import pokedex.model.box.BoxName;
 
 
+/**
+ * Lädt initiale Box Daten beim Anwendungsstart, falls sie noch nicht existieren.
+ * Nutzt JDBCTemplate für direkte SQL-Operationen auf der Datenbank.
+ */
 @Component
 @Transactional
 public class BoxDataLoader implements CommandLineRunner {
@@ -33,7 +37,7 @@ public class BoxDataLoader implements CommandLineRunner {
                     "SELECT COUNT(*) FROM box WHERE name =?", Long.class, boxName.name()
             );
 
-            if (count == null || count == 0) {
+            if (count == 0) {
                 jdbcTemplate.update("INSERT INTO box (name) VALUES (?)", boxName.name());
                 System.out.println("Box " + boxName + " wurde automatisch erstellt");
             } else {

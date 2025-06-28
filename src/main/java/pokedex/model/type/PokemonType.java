@@ -1,9 +1,9 @@
 package pokedex.model.type;
 
 
-/*
-*
-* */
+import lombok.Getter;
+
+@Getter
 public enum PokemonType {
     NORMAL("Normal"),
     PFLANZE("Pflanze"),
@@ -27,7 +27,4 @@ public enum PokemonType {
         this.displayName = displayName;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
 }

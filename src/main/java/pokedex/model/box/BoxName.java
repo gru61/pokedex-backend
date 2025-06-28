@@ -1,6 +1,11 @@
 package pokedex.model.box;
 
 
+import lombok.Getter;
+
+import java.util.List;
+import java.util.stream.Stream;
+
 /**
 * Enum für die Darstellung der verschiedenen Boxen im System.
 * Enthält auch lesbare Namen für die Anzeige im Frontend.
@@ -8,6 +13,7 @@ package pokedex.model.box;
 * BOX.... >0 && <=20
 */
 
+@Getter
 public enum BoxName {
     TEAM("Team"),
     BOX1("Box 1"),
@@ -23,16 +29,22 @@ public enum BoxName {
     BOX11("Box 11"),
     BOX12("Box 12");
 
-    /*
-    * Für die UI Anzeige im Frontend
-    * */
+
     private final String displayName;
 
     BoxName(String displayName) {
         this.displayName = displayName;
     }
-    public String getDisplayName() {
-        return displayName;
+
+
+    /**
+     * Gibt alle Boxen als String zurück
+     * @return Eine Liste aller Boxen
+     */
+    public static List<String> getAllDisplayNames() {
+        return Stream.of(values())
+                .map(BoxName::getDisplayName)
+                .toList();
     }
 }
 

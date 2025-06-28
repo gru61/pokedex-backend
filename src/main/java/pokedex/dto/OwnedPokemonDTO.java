@@ -7,6 +7,10 @@ import pokedex.model.edition.Edition;
 import pokedex.model.ownedpokemon.OwnedPokemon;
 
 
+/**
+ * DTO zu Darstellung eines gefangenen Pokemon im Frontend.
+ * Enthält alle wichtigen Infos zur Anzeige
+ */
 @Data
 public class OwnedPokemonDTO {
     private Long id;
@@ -19,8 +23,13 @@ public class OwnedPokemonDTO {
     private String type1;
     private String type2;
 
-    //Konstruktor fürs Mappen
+    private OwnedPokemonDTO() {}
 
+    /**
+     * Erstellt ein DTO aus einem OwnedPokemon-Objekt
+     * @param pokemon Das OwnedPokemon-Objekt
+     * @return DTO für die API
+     */
     public static OwnedPokemonDTO from(OwnedPokemon pokemon) {
         OwnedPokemonDTO dto = new OwnedPokemonDTO();
         dto.setId(pokemon.getId());
@@ -35,5 +44,4 @@ public class OwnedPokemonDTO {
 
         return dto;
     }
-
 }

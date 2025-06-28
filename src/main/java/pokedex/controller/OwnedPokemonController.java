@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import pokedex.dto.CreateOwnedRequest;
 import pokedex.dto.OwnedPokemonDTO;
 import pokedex.dto.UpdateOwnedRequest;
-import pokedex.model.ownedpokemon.OwnedPokemon;
 import pokedex.service.OwnedPokemonService;
 
 import java.util.List;
@@ -23,7 +22,7 @@ import java.util.List;
 @RequestMapping("/api/pokemon")
 public class OwnedPokemonController {
 
-
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OwnedPokemonController.class);
     private final OwnedPokemonService ownedService;
 
 
@@ -40,11 +39,11 @@ public class OwnedPokemonController {
     @ApiResponse(responseCode = "200", description = "Liste erfolgreich geladen")
     @GetMapping
     public ResponseEntity<List<OwnedPokemonDTO>> getAllPokemon() {
-        List<OwnedPokemon> all =  ownedService.getAllPokemon();
-        List<OwnedPokemonDTO> dtos = all.stream()
+        logger.info("Ruft das Pokedex der ersten Generation auf");
+        var dtos =  ownedService.getAllPokemon()
+                .stream()
                 .map(OwnedPokemonDTO::from)
                 .toList();
-
         return ResponseEntity.ok(dtos);
     }
 
@@ -59,8 +58,8 @@ public class OwnedPokemonController {
     @ApiResponse(responseCode = "404", description = "Pokemon nicht gefunden", content = @Content)
     @GetMapping("/{id}")
     public ResponseEntity<OwnedPokemonDTO> getPokemonById(@PathVariable Long id) {
-        OwnedPokemon existing =  ownedService.getPokemonById(id);
-        return ResponseEntity.ok(OwnedPokemonDTO.from(existing));
+        logger.info("Ruft das Pokemon anhand der ID {} auf", id);
+        return ResponseEntity.ok(OwnedPokemonDTO.from(ownedService.getPokemonById(id)));
     }
 
 
@@ -74,9 +73,10 @@ public class OwnedPokemonController {
     @ApiResponse(responseCode = "400", description = "Ungültige Eingabe Daten", content = @Content)
     @ApiResponse(responseCode = "409", description = "Ziel Box voll oder ungültige Entwicklung", content = @Content)
     @PostMapping
-    public ResponseEntity<OwnedPokemon> addPokemon(@RequestBody @Valid CreateOwnedRequest request) {
-        OwnedPokemon newPokemon = ownedService.addPokemon(request);
-        return ResponseEntity.status(201).body(newPokemon);
+    public ResponseEntity<OwnedPokemonDTO> addPokemon(@RequestBody @Valid CreateOwnedRequest request) {
+        logger.info("Fügt ein neues gefangenes Pokemon hinzu: {}", request);
+        var pokemon = ownedService.addPokemon(request);
+        return ResponseEntity.status(201).body(OwnedPokemonDTO.from(pokemon));
     }
 
 
@@ -91,9 +91,10 @@ public class OwnedPokemonController {
     @ApiResponse(responseCode = "400", description = "Aktualisierung fehlgeschlagen", content = @Content)
     @ApiResponse(responseCode = "404", description = "Pokemon nicht gefunden", content = @Content)
     @PutMapping("/{id}")
-    public ResponseEntity<OwnedPokemon> updatePokemon(@PathVariable Long id, @RequestBody @Valid UpdateOwnedRequest request) {
-        OwnedPokemon updated = ownedService.updatePokemon(id, request);
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<OwnedPokemonDTO> updatePokemon(@PathVariable Long id, @RequestBody @Valid UpdateOwnedRequest request) {
+        logger.info("Aktualisiert das gefangene Pokemon anhand dessen ID {} : {}", id, request);
+        var updated = ownedService.updatePokemon(id, request);
+        return ResponseEntity.ok(OwnedPokemonDTO.from(updated));
     }
 
 
@@ -106,6 +107,7 @@ public class OwnedPokemonController {
     @ApiResponse( responseCode = "404", description = "Pokemon nicht gefunden")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePokemonById(@PathVariable Long id) {
+        logger.info("Lösche das Pokemon mit der ID: {}", id);
         ownedService.deletePokemonById(id);
         return ResponseEntity.noContent().build();
     }
