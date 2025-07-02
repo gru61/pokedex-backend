@@ -1,4 +1,4 @@
-package pokedex.service;
+package pokedex.service.ownedpokemon;
 
 
 import pokedex.exception.BoxFullException;
@@ -6,16 +6,18 @@ import pokedex.exception.InvalidEvolutionException;
 import pokedex.exception.InvalidUpdateException;
 import pokedex.exception.NotFoundException;
 import org.springframework.stereotype.Service;
-import pokedex.dto.CreateOwnedRequest;
-import pokedex.dto.UpdateOwnedRequest;
+import pokedex.dto.ownedpokemon.CreateOwnedRequest;
+import pokedex.dto.ownedpokemon.UpdateOwnedRequest;
 import pokedex.model.box.Box;
 import pokedex.model.box.BoxName;
 import pokedex.model.ownedpokemon.OwnedPokemon;
 import pokedex.model.pokemonspecies.PokemonSpecies;
-import pokedex.repository.OwnedPokemonRepository;
-import pokedex.repository.PokemonSpeciesRepository;
+import pokedex.repository.ownedpokemon.OwnedPokemonRepository;
+import pokedex.repository.pokemonspecies.PokemonSpeciesRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pokedex.service.evolution.EvolutionService;
+import pokedex.service.box.BoxService;
 
 import java.util.List;
 import java.util.Optional;

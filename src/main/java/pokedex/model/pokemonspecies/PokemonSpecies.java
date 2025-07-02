@@ -5,7 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import pokedex.dataloader.PokemonSpeciesDataLoader;
+import pokedex.dataloader.pokemonspecies.PokemonSpeciesDataLoader;
 import pokedex.model.type.PokemonType;
 
 

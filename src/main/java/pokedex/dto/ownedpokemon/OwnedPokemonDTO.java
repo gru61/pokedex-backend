@@ -1,4 +1,4 @@
-package pokedex.dto;
+package pokedex.dto.ownedpokemon;
 
 
 import lombok.Data;

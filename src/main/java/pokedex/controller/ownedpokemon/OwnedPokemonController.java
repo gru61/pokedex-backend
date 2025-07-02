@@ -1,4 +1,4 @@
-package pokedex.controller;
+package pokedex.controller.ownedpokemon;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -6,10 +6,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pokedex.dto.CreateOwnedRequest;
-import pokedex.dto.OwnedPokemonDTO;
-import pokedex.dto.UpdateOwnedRequest;
-import pokedex.service.OwnedPokemonService;
+import pokedex.dto.ownedpokemon.CreateOwnedRequest;
+import pokedex.dto.ownedpokemon.OwnedPokemonDTO;
+import pokedex.dto.ownedpokemon.UpdateOwnedRequest;
+import pokedex.service.ownedpokemon.OwnedPokemonService;
 
 import java.util.List;
 
@@ -101,8 +101,8 @@ public class OwnedPokemonController {
     @ApiResponse(responseCode = "200", description = "Pokemon erfolgreich gelöscht")
     @ApiResponse( responseCode = "404", description = "Pokemon nicht gefunden")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePokemonById(@PathVariable Long id) {
+    public ResponseEntity<String> deletePokemonById(@PathVariable Long id) {
         ownedService.deletePokemonById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Pokemon erfolgreich gelöscht");
     }
 }

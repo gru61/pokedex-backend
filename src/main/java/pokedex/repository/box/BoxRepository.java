@@ -1,4 +1,4 @@
-package pokedex.repository;
+package pokedex.repository.box;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import pokedex.model.box.Box;

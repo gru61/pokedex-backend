@@ -1,4 +1,4 @@
-package pokedex.dto;
+package pokedex.dto.ownedpokemon;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

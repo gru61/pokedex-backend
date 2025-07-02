@@ -1,4 +1,4 @@
-package pokedex.service;
+package pokedex.service.box;
 
 import pokedex.exception.BoxFullException;
 import pokedex.exception.SameBoxException;
@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import pokedex.model.box.Box;
 import pokedex.model.box.BoxName;
 import pokedex.model.ownedpokemon.OwnedPokemon;
-import pokedex.repository.BoxRepository;
-import pokedex.repository.OwnedPokemonRepository;
+import pokedex.repository.box.BoxRepository;
+import pokedex.repository.ownedpokemon.OwnedPokemonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

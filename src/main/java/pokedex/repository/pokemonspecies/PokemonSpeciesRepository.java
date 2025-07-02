@@ -1,4 +1,4 @@
-package pokedex.repository;
+package pokedex.repository.pokemonspecies;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import pokedex.model.pokemonspecies.PokemonSpecies;

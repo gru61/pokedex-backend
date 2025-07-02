@@ -1,4 +1,4 @@
-package pokedex.service;
+package pokedex.service.evolution;
 
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -32,7 +32,7 @@ public class EvolutionService {
     public EvolutionService(ObjectMapper objectMapper) {
         try {
             //Versucht die JSON Datei aus dem PATH zu laden
-            InputStream is = getClass().getClassLoader().getResourceAsStream("evolutions.json");
+            InputStream is = getClass().getClassLoader().getResourceAsStream("first_gen_evolutions_rules/evolutions.json");
             if (is == null) {
                 throw new InitializationException("Die Datei wurde nicht gefunden");
             }

@@ -1,6 +1,5 @@
 package pokedex.model.box;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -34,7 +33,7 @@ public class Box {
 
 
     @OneToMany(mappedBy = "box", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private final List<OwnedPokemon> pokemons = new ArrayList<>();
 
 

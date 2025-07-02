@@ -1,4 +1,4 @@
-package pokedex.dataloader;
+package pokedex.dataloader.pokemonspecies;
 
 import jakarta.transaction.Transactional;
 import org.springframework.boot.CommandLineRunner;

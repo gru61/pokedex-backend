@@ -1,9 +1,9 @@
-package pokedex.service;
+package pokedex.service.pokemonspecies;
 
 import pokedex.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import pokedex.model.pokemonspecies.PokemonSpecies;
-import pokedex.repository.PokemonSpeciesRepository;
+import pokedex.repository.pokemonspecies.PokemonSpeciesRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

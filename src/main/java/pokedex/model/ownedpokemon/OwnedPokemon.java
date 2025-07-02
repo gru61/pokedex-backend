@@ -1,6 +1,6 @@
 package pokedex.model.ownedpokemon;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -15,6 +15,15 @@ import pokedex.model.edition.Edition;
 import java.util.Objects;
 
 
+/**
+ * Repräsentiert ein gefangenes Pokemon mit den Attributen:
+ * - ID, welche von der Datenbank gegeben wird und für klare identifizierung dient
+ * - Die Attribute von der Pokemon-Art
+ * - Nickname, für eine Optionale vergabe vom User
+ * - Level,
+ * - Box,
+ * - Edition, sind jeweils Mussfelder, um das gefangene Pokemon klar zu dokumentieren und eine klare Übersicht zu bahlten.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -44,7 +53,7 @@ public class OwnedPokemon {
     @NotNull
     @ManyToOne(optional = false)
     @JoinColumn(name = "box_id",  nullable = false)
-    @JsonBackReference
+    @JsonIgnore
     private Box box;
 
 

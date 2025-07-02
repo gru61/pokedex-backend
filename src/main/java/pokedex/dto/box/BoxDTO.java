@@ -1,6 +1,8 @@
-package pokedex.dto;
+package pokedex.dto.box;
 
-import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import pokedex.dto.ownedpokemon.OwnedPokemonDTO;
 import pokedex.model.box.Box;
 import pokedex.model.box.BoxName;
 
@@ -12,7 +14,8 @@ import java.util.stream.Collectors;
  * DTO zur Darstellung einer Box mit den enthaltenden Pokemon.
  * Wird genutzt, um Bax Daten an das UI zu übergeben
  */
-@Builder
+@Getter
+@Setter
 public class BoxDTO {
     private BoxName name;
     private int capacity;
@@ -28,13 +31,16 @@ public class BoxDTO {
      * @return Eine für das Frontend geeignete DTO-Repräsentation der Box
      */
     public static BoxDTO from (Box box) {
-        return BoxDTO.builder()
-                .name(box.getName())
-                .capacity(box.getCapacity())
-                .pokemons(box.getPokemons()
+        BoxDTO dto = new BoxDTO();
+        dto.setName(box.getName());
+        dto.setCapacity(box.getCapacity());
+        dto.setPokemons(
+                box.getPokemons()
                         .stream()
                         .map(OwnedPokemonDTO::from)
-                        .collect(Collectors.toList()))
-                .build();
+                        .collect(Collectors.toList())
+        );
+        return dto;
     }
+
 }
