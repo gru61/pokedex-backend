@@ -1,4 +1,4 @@
-package pokedex.repository;
+package pokedex.repository.box;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import pokedex.model.box.Box;
@@ -9,5 +9,4 @@ import java.util.Optional;
 public interface BoxRepository extends JpaRepository<Box, Long> {
     Optional<Box> findByName(BoxName name);
 
-    Long countByName(BoxName name);
 }

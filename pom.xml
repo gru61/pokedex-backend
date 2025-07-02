@@ -16,7 +16,6 @@
     <artifactId>pokedex-app</artifactId>
     <version>1.0.0</version>
 
-
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
@@ -25,7 +24,6 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -54,7 +52,6 @@
             <scope>test</scope>
         </dependency>
 
-
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
@@ -77,6 +74,10 @@
             <version>2.2.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -88,6 +89,10 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+                    <compilerArgs>
+                        <arg>--add-modules</arg>
+                        <arg>java.sql</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
 
@@ -106,4 +111,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

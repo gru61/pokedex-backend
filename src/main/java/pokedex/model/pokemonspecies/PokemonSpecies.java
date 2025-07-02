@@ -1,47 +1,69 @@
 package pokedex.model.pokemonspecies;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import pokedex.dataloader.pokemonspecies.PokemonSpeciesDataLoader;
 import pokedex.model.type.PokemonType;
 
-@Setter
-@Getter
+
+/**
+ * Repräsentiert eine Art von Pokemon.
+ * Jede Art hat eine eindeutige:
+ * - Pokedex-ID
+ * - Namen
+ * - Mindestens einen Typ wenn nicht sogar zwei
+ */
+@Data
+@NoArgsConstructor
+@EqualsAndHashCode(of = {"pokedexId"})
 @Entity
 public class PokemonSpecies {
 
     private static final int MAX_NAME_LENGTH = 11;
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
 
     @Column(unique = true)
     @Min(value = 1, message = "Was kommt vor der 1? (tipp:DU!)")
     @Max(value = 151, message = "Echte OG's wissen wie vile ePokemon es in der Gen 1 gibt")
     private int pokedexId;
 
+
     @NotBlank(message = "Das ist nicht das Haus von Schwarz und Weiss")
     @Column(unique = true)
     @Size(max=MAX_NAME_LENGTH)//längster Name der ersten Gen = Knuddeluff
     private String name;
 
+
     @Enumerated(EnumType.STRING)
     @Column(name = "Type1", nullable = false)
     private PokemonType type1;
+
 
     @Enumerated(EnumType.STRING)
     @Column(name = "Type2")
     private PokemonType type2;
 
-    public PokemonSpecies() {}
 
-
+    /**
+     * Momentan keine verwendung da die Arten durch die Klasse {@link PokemonSpeciesDataLoader} per SQL geladen werden.
+     * Jedoch könnte der Konstruktor in verwendung kommen, wenn man Tests macht oder als Admin neue Arten einpflegt.
+     * @param pokedexId Die ID im nationalen Pokedex
+     * @param name Der Name der Pokemon-Art
+     * @param type1 Der primäre Typ, muss Feld
+     * @param type2 Der sekundäre Tpy, was optional ist
+     */
     public PokemonSpecies(int pokedexId, String name, PokemonType type1, PokemonType type2) {
+        if (type1 == null) {
+            throw new IllegalArgumentException("Type 1 kann nicht null sein");
+        }
         this.pokedexId = pokedexId;
         this.name = name;
         this.type1 = type1;

@@ -1,9 +1,14 @@
 package pokedex.model.type;
 
 
-/*
-*
-* */
+import lombok.Getter;
+
+
+/**
+ * Enum für die Darstellung der verschiedenen Pokemon Typen im System.
+ * Enthält auch lesbare Namen für die Anzeige im Frontend.
+ */
+@Getter
 public enum PokemonType {
     NORMAL("Normal"),
     PFLANZE("Pflanze"),
@@ -27,7 +32,4 @@ public enum PokemonType {
         this.displayName = displayName;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
 }

@@ -1,4 +1,4 @@
-package pokedex.dto;
+package pokedex.dto.ownedpokemon;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -11,6 +11,9 @@ import pokedex.model.box.BoxName;
 import pokedex.model.edition.Edition;
 
 
+/**
+ * DTO für das Erstellen eines neuen gefangenen Pokemon.
+ */
 @Setter
 @Getter
 @ToString

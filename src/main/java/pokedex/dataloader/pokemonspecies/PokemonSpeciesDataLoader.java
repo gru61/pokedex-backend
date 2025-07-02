@@ -1,4 +1,4 @@
-package pokedex.dataloader;
+package pokedex.dataloader.pokemonspecies;
 
 import jakarta.transaction.Transactional;
 import org.springframework.boot.CommandLineRunner;
@@ -11,6 +11,10 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 
 
+/**
+ * Lädt die Pokemon-Daten (erste Generation) beim Start der Anwendung,
+ * fals die tabelle 'pokemon_species' noch leer ist.
+ */
 @Component
 public class PokemonSpeciesDataLoader implements CommandLineRunner {
 
@@ -24,17 +28,17 @@ public class PokemonSpeciesDataLoader implements CommandLineRunner {
 
     @Override
     @Transactional
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         Long count = jdbcTemplate.queryForObject("select count(*) from pokemon_species", Long.class);
         if (count != null && count >0) {
             System.out.println("Pokedex ist schon auf dem aktuellsten Stand");
             return;
         }
         try (Connection connection = dataSource.getConnection()) {
-            ScriptUtils.executeSqlScript(connection, new  ClassPathResource("data/pokemon_species.sql"));
+            ScriptUtils.executeSqlScript(connection, new  ClassPathResource("first_gen_pokedex/pokemon_species.sql"));
             System.out.println("Pokedex erfolgreich geladen");
         } catch (Exception e) {
-            System.err.println("Fehler beim laden des Pokedexs" + e.getMessage());
+            System.err.println("Fehler beim laden des Pokedex" + e.getMessage());
         }
     }
 }

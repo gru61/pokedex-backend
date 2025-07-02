@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Aktuelles Datum & Zeit für Session-Logdatei -->
+    <timestamp key="startupTimestamp" datePattern="yyyy-MM-dd_HH-mm-ss"/>
+
+    <!-- Log-Datei im relativen Ordner logs/ -->
+    <appender name="SESSION_FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/session-${startupTimestamp}.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Optional: Logs auch in der Konsole anzeigen -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="SESSION_FILE"/>
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>

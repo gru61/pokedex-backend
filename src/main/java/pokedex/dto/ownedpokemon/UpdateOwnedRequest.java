@@ -1,4 +1,4 @@
-package pokedex.dto;
+package pokedex.dto.ownedpokemon;
 
 
 import jakarta.validation.constraints.Max;
@@ -11,6 +11,15 @@ import lombok.ToString;
 import pokedex.model.box.BoxName;
 import pokedex.model.edition.Edition;
 
+
+/**
+ * DTO für das Aktualisieren eines bereits gefangenen Pokemon.
+ * Wird für:
+ * - Entwicklung
+ * - Umbenennung (Nicknamen)
+ * - Levelanpassung
+ * genutzt
+ */
 @Setter
 @Getter
 @ToString
@@ -29,7 +38,6 @@ public class UpdateOwnedRequest {
     * Setzt den Spitznamen für das Pokemon.
     * Darf nicht leer sein, wenn man einen setzen will
     */
-    @NotNull(message = "Nickname soll ja nicht länger als der Wahre Name sein")
     @Size(min = 1, max = 10, message = "Nickname muss zwischen 1 und 10 Zeichen haben")
     private String nickname;
 
@@ -44,10 +52,12 @@ public class UpdateOwnedRequest {
     /**
      * Die Edition, in der sich das Pokemon sich befindet
      */
+    @NotNull(message = "Edition darf nicht leer sein")
     private Edition edition;
 
     /**
      * Die Box, in der sich das Pokemon befindet
      */
+    @NotNull(message = "Box muss angegeben werden")
     private BoxName box;
 }
