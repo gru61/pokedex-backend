@@ -17,9 +17,4 @@ public class PokedexApp {
         SpringApplication.run(PokedexApp.class,args);
     }
 
-    @Bean
-    public Validator validator() {
-        return Validation.buildDefaultValidatorFactory().getValidator();
-    }
-
 }
