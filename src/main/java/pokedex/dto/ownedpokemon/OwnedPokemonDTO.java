@@ -18,7 +18,7 @@ public class OwnedPokemonDTO {
     private int level;
     private Edition edition;
     private BoxName boxName;
-    private Integer speciesId;
+    private Integer pokedexId;
     private String speciesName;
     private String type1;
     private String type2;
@@ -37,7 +37,7 @@ public class OwnedPokemonDTO {
         dto.setLevel(pokemon.getLevel());
         dto.setEdition(pokemon.getEdition());
         dto.setBoxName(pokemon.getBox().getName());
-        dto.setSpeciesId(pokemon.getSpecies().getPokedexId());
+        dto.setPokedexId(pokemon.getSpecies().getPokedexId());
         dto.setSpeciesName(pokemon.getSpecies().getName());
         dto.setType1(pokemon.getSpecies().getType1().getDisplayName());
         dto.setType2(pokemon.getSpecies().getType2() !=null ? pokemon.getSpecies().getType2().getDisplayName() : null);

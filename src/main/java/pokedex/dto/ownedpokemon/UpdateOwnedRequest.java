@@ -30,7 +30,7 @@ public class UpdateOwnedRequest {
     * Muss ein gültiger Pokedex-Eintrag sein und eine erlaubte Entwicklung darstellung
     */
     @NotNull(message = "Muss eine Pokedex ID haben")
-    private Long speciesId;
+    private Long pokedexId;
 
 
     /**
