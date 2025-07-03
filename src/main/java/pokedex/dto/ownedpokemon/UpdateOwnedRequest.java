@@ -5,9 +5,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import pokedex.model.box.BoxName;
 import pokedex.model.edition.Edition;
 
@@ -23,6 +21,7 @@ import pokedex.model.edition.Edition;
 @Setter
 @Getter
 @ToString
+@Builder
 public class UpdateOwnedRequest {
 
 
