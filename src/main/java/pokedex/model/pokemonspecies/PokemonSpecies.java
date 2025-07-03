@@ -60,11 +60,10 @@ public class PokemonSpecies {
      * @param type1 Der primäre Typ, muss Feld
      * @param type2 Der sekundäre Tpy, was optional ist
      */
-    public PokemonSpecies(int pokedexId, String name, PokemonType type1, PokemonType type2) {
+    public PokemonSpecies(Long pokedexId, String name, PokemonType type1, PokemonType type2) {
         if (type1 == null) {
             throw new IllegalArgumentException("Type 1 kann nicht null sein");
         }
-        this.pokedexId = pokedexId;
         this.name = name;
         this.type1 = type1;
         this.type2 = type2;

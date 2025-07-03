@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,6 +18,7 @@ import pokedex.model.edition.Edition;
 @Setter
 @Getter
 @ToString
+@AllArgsConstructor
 public class CreateOwnedRequest {
 
     @NotNull(message = "Die Pokedex ID darf nicht NULL sein")
