@@ -22,7 +22,7 @@ import pokedex.model.edition.Edition;
 public class CreateOwnedRequest {
 
     @NotNull(message = "Die Pokedex ID darf nicht NULL sein")
-    private Long speciesId;
+    private Long pokedexId;
 
     @Min(value = 1, message = "Why so weak!? (min lvl = 1)")
     @Max(value = 100, message = "Steroide sind nicht gut fürs Pokemon (max lvl = 100)")

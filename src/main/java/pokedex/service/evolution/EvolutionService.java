@@ -49,31 +49,31 @@ public class EvolutionService {
     /**
      * Prüfung, ob eine Entwicklung von einer Pokedex-ID zur nächsten ID erlaubt ist
      *
-     * @param currentSpeciesId Die aktuelle Pokedex-ID des Pokemons
-     * @param targetSpeciesId Die neue Pokedex-ID nach der Entwicklung
+     * @param currentPokedexId Die aktuelle Pokedex-ID des Pokemons
+     * @param targetPokedexId Die neue Pokedex-ID nach der Entwicklung
      * @return true, wenn die entwicklung erlaubt ist
      */
-    public boolean isAllowedEvolution(Integer currentSpeciesId, Integer targetSpeciesId) {
-        if (currentSpeciesId == null || targetSpeciesId == null) {
-            logger.warn("Ungültige Eingabe: currentSpeciesId={} oder targetSpeciesId=null", currentSpeciesId);
+    public boolean isAllowedEvolution(Integer currentPokedexId, Integer targetPokedexId) {
+        if (currentPokedexId == null || targetPokedexId == null) {
+            logger.warn("Ungültige Eingabe: currentPokedexId={} oder targetPokedexId=null", currentPokedexId);
             return false;
         }
 
-        List<Integer> allowedTargets =  evolutionRules.get(currentSpeciesId);
+        List<Integer> allowedTargets =  evolutionRules.get(currentPokedexId);
         if (allowedTargets == null) {
-            logger.warn("Keine Entwicklung für currentSpeciesId={} gefunden",  currentSpeciesId);
+            logger.warn("Keine Entwicklung für currentPokedexId={} gefunden",  currentPokedexId);
             return false;
         }
 
         // Prüft ob die Ziel-ID in den erlaubten Zielen enthalten sind z.B. 147 (Dratini) -> 148 (Dragonir)
         for (int allowedTarget : allowedTargets) {
-            if (allowedTarget == targetSpeciesId) {
-                logger.debug("Erlaubte Entwicklung gefunden: {} -> {}",  currentSpeciesId, targetSpeciesId);
+            if (allowedTarget == targetPokedexId) {
+                logger.debug("Erlaubte Entwicklung gefunden: {} -> {}",  currentPokedexId, targetPokedexId);
                 return true;
             }
         }
 
-        logger.warn("Keine erlaubte Entwicklung gefunden: {} -> {}",  currentSpeciesId, targetSpeciesId);
+        logger.warn("Keine erlaubte Entwicklung gefunden: {} -> {}",  currentPokedexId, targetPokedexId);
         return false;
     }
 }

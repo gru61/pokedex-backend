@@ -80,8 +80,8 @@ public class OwnedPokemonService {
         logger.info("Füge ein neues gefangenes Pokemon hinzu: {}", request);
 
         // Lade die Species Daten des gefangenen Pokemon
-        PokemonSpecies species = speciesRepo.findById(request.getSpeciesId())
-                .orElseThrow(() ->new NotFoundException("Kein Pokemon mit der Pokedex-ID " + request.getSpeciesId() + " gefunden"));
+        PokemonSpecies species = speciesRepo.findById(request.getPokedexId())
+                .orElseThrow(() ->new NotFoundException("Kein Pokemon mit der Pokedex-ID " + request.getPokedexId() + " gefunden"));
 
         // Validierung der Zielbox
         BoxName targetBoxName = request.getBox();
@@ -131,7 +131,7 @@ public class OwnedPokemonService {
 
         // Aktualisiere Box und Spezies, falls nötig
         updateBoxIfChanged(existing, request.getBox());
-        updateSpeciesIfChanged(existing, request.getSpeciesId());
+        updateSpeciesIfChanged(existing, request.getPokedexId());
 
 
         // Aktualisiere die restlichen Werte
@@ -171,16 +171,16 @@ public class OwnedPokemonService {
 
     /**
      * Lädt ein gültiges Pokemon per Pokedex-ID
-     * @param speciesId Die Pokedex-ID des Pokemons
+     * @param pokedexId Die Pokedex-ID des Pokemons
      * @return Das passende Pokemon, gemäss Pokedex-ID
      * @throws NotFoundException Wenn das Pokemon per Pokedex-ID nicht gefunden wurde
      */
-    private PokemonSpecies getValidSpecies(Long speciesId) {
-        logger.info("Lade das Pokemon per Pokedex-ID {}", speciesId);
+    private PokemonSpecies getValidSpecies(Long pokedexId) {
+        logger.info("Lade das Pokemon per Pokedex-ID {}", pokedexId);
 
-        Optional<PokemonSpecies> species = speciesRepo.findById(speciesId);
+        Optional<PokemonSpecies> species = speciesRepo.findById(pokedexId);
         if (species.isEmpty()) {
-            logger.warn("Pokemon per Pokedex-IDS nicht gefunden: ID={}", speciesId);
+            logger.warn("Pokemon per Pokedex-IDS nicht gefunden: ID={}", pokedexId);
             throw new NotFoundException("Pokemon nicht gefunden");
         }
         return species.get();
@@ -190,20 +190,20 @@ public class OwnedPokemonService {
     /**
      * Prüft, ob sich das Pokémon entwickeln kann und führt diesen wenn möglich durch.
      * @param existing Das aktuelle Pokémon
-     * @param newSpeciesId Die neue Pokedex-ID
+     * @param newPokedexId Die neue Pokedex-ID
      * @throws InvalidEvolutionException Wenn die Entwicklung nihct erlaubt oder möglich ist
      */
-    private void updateSpeciesIfChanged(OwnedPokemon existing, Long newSpeciesId) {
+    private void updateSpeciesIfChanged(OwnedPokemon existing, Long newPokedexId) {
         // Validierung, ob eine Änderung stattgefunden hat
-        if (newSpeciesId == null || existing.getSpecies().getId().equals(newSpeciesId)) {
+        if (newPokedexId == null || existing.getSpecies().getId().equals(newPokedexId)) {
             logger.debug("Keine Änderungen Pokemon gefunden: {}", existing);
             return;
         }
 
-        logger.info("Prüfe Entwicklung für Pokemon: {} -> Neue Pokedex-ID: {}", existing, newSpeciesId);
+        logger.info("Prüfe Entwicklung für Pokemon: {} -> Neue Pokedex-ID: {}", existing, newPokedexId);
 
         // Ladet das neue Pokemon
-        PokemonSpecies newSpecies = getValidSpecies(newSpeciesId);
+        PokemonSpecies newSpecies = getValidSpecies(newPokedexId);
 
         if (!evolutionService.isAllowedEvolution(existing.getSpecies().getPokedexId(), newSpecies.getPokedexId())) {
             logger.warn("Ungültige Entwicklung dür Pokemon: {}", existing);
